@@ -1,8 +1,8 @@
 # ----------- Sensor ----------- #
 sensor:
   - platform:               modbus_controller
-    name:                   ${name} Temperature ${channel_06_friendly_name}
-    id:                     ${device}_temp_${channel_06_id}
+    name:                   ${name} ${channel_06_friendly_name} Temperatur
+    id:                     ${device}_${channel_06_id}_temperatur
     modbus_controller_id:   ${device}_modbus_controller
     custom_command: 
       - 0x01
@@ -20,8 +20,8 @@ sensor:
       - multiply: 0.1
   # Battery
   - platform:               modbus_controller
-    name:                   ${name} Battery ${channel_06_friendly_name}
-    id:                     ${device}_battery_${channel_06_id}
+    name:                   ${name} ${channel_06_friendly_name} Batteri
+    id:                     ${device}_${channel_06_id}_batteri
     modbus_controller_id:   ${device}_modbus_controller
     custom_command: 
       - 0x01
@@ -40,8 +40,8 @@ sensor:
 # ----------- Binary ----------- #
 binary_sensor:
   - platform:               modbus_controller
-    name:                   ${name} Output ${channel_06_friendly_name}
-    id:                     ${device}_output_${channel_06_id}
+    name:                   ${name} ${channel_06_friendly_name} Aktiv
+    id:                     ${device}_${channel_06_id}_aktiv
     modbus_controller_id:   ${device}_modbus_controller
     custom_command:
       - 0x01
@@ -55,8 +55,8 @@ binary_sensor:
 # ----------- Number ----------- #
 number:
   - platform:               modbus_controller
-    name:                   ${name} Target Temperature ${channel_06_friendly_name}
-    id:                     ${device}_target_temp_${channel_06_id}
+    name:                   ${name} ${channel_06_friendly_name} Måltemperatur
+    id:                     ${device}_${channel_06_id}_maaltemperatur
     modbus_controller_id:   ${device}_modbus_controller
     custom_command: 
       - 0x01
@@ -83,8 +83,8 @@ number:
 # ----------- Switch ----------- #
 switch:
   - platform:               modbus_controller
-    name:                   ${name} Standby ${channel_06_friendly_name}
-    id:                     ${device}_standby_${channel_06_id}
+    name:                   ${name} ${channel_06_friendly_name} Standby
+    id:                     ${device}_${channel_06_id}_standby
     modbus_controller_id:   ${device}_modbus_controller
     custom_command:
       - 0x01
@@ -94,7 +94,7 @@ switch:
       - $channel_06
       - 0x01
     write_lambda: |-
-      ESP_LOGD("main","Modbus Switch incoming state for channel 01 = %s",ONOFF(x));
+      ESP_LOGD("main","Modbus Switch incoming state for channel 06 = %s",ONOFF(x));
       bool state = ONOFF(x);
       uint8_t MODE_MASK = 0x07;
       payload.push_back(0x01);
@@ -120,14 +120,14 @@ switch:
       return true;
     lambda: |-
       int mode = data[1];
-      ESP_LOGD("main","MODE for Channel 01 is: %i",mode);    
+      ESP_LOGD("main","MODE for Channel 06 is: %i",mode);    
       return mode;
 
 # ----------- Climate ----------- #
 climate:
   - platform:               wavinahc9000v2
     name:                   ${name} ${channel_06_friendly_name}
-    current_temp_sensor_id: ${device}_temp_${channel_06_id}
-    target_temp_number_id:  ${device}_target_temp_${channel_06_id}
-    mode_switch_sensor_id:  ${device}_standby_${channel_06_id}
-    action_sensor_id:       ${device}_output_${channel_06_id}
+    current_temp_sensor_id: ${device}_${channel_06_id}_temperatur
+    target_temp_number_id:  ${device}_${channel_06_id}_maaltemperatur
+    mode_switch_sensor_id:  ${device}_${channel_06_id}_standby
+    action_sensor_id:       ${device}_${channel_06_id}_aktiv
