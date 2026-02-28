@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <sstream>
+#include "esphome/core/application.h"
 
 namespace esphome {
 namespace wavinahc9000v3 {
