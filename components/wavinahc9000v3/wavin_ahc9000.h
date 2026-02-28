@@ -290,21 +290,28 @@ inline void WavinAHC9000::add_channel_floor_max_temperature_sensor(uint8_t ch, s
 
 class WavinZoneClimate : public climate::Climate, public Component {
  public:
-  void set_parent(WavinAHC9000 *p) { this->parent_ = p; }
-  void set_single_channel(uint8_t ch) {
-    this->single_channel_ = ch;
+  WavinZoneClimate() = default;
+
+  void set_parent(WavinAHC9000 *parent) { this->parent_ = parent; }
+  void set_use_floor_temperature(bool use) { this->use_floor_temperature_ = use; }
+  
+  void set_single_channel(uint8_t channel) {
+    this->single_channel_ = channel;
     this->single_channel_set_ = true;
-    this->members_.clear();
+    this->member_count_ = 0;
   }
-  void set_use_floor_temperature(bool v) { this->use_floor_temperature_ = v; }
+  
   void set_members(const std::vector<int> &members) {
-    this->members_.clear();
-    for (int m : members) this->members_.push_back(static_cast<uint8_t>(m));
+    this->member_count_ = 0;
+    for (int m : members) {
+      if (this->member_count_ < 16) {
+        this->members_[this->member_count_++] = static_cast<uint8_t>(m);
+      }
+    }
     this->single_channel_set_ = false;
   }
 
   void dump_config() override;
-
   void update_from_parent();
 
  protected:
@@ -314,7 +321,10 @@ class WavinZoneClimate : public climate::Climate, public Component {
   WavinAHC9000 *parent_{nullptr};
   uint8_t single_channel_{0};
   bool single_channel_set_{false};
-  std::vector<uint8_t> members_{};
+  
+  // Modernized memory architecture: static array mapping
+  uint8_t member_count_{0};
+  std::array<uint8_t, 16> members_{}; 
   bool use_floor_temperature_{false};
 };
 
