@@ -301,15 +301,11 @@ class WavinZoneClimate : public climate::Climate, public Component {
     this->member_count_ = 0;
   }
   
-  void set_members(const std::vector<int> &members) {
-    this->member_count_ = 0;
-    for (int m : members) {
-      if (this->member_count_ < 16) {
-        this->members_[this->member_count_++] = static_cast<uint8_t>(m);
-      }
-    }
+    void set_members(const std::vector<int> &members) {
+    this->members_.clear();
+    for (int m : members) this->members_.push_back(static_cast<uint8_t>(m));
     this->single_channel_set_ = false;
-  }
+    }
 
   void dump_config() override;
   void update_from_parent();
@@ -323,8 +319,7 @@ class WavinZoneClimate : public climate::Climate, public Component {
   bool single_channel_set_{false};
   
   // Modernized memory architecture: static array mapping
-  uint8_t member_count_{0};
-  std::array<uint8_t, 16> members_{}; 
+    std::vector<uint8_t> members_{};
   bool use_floor_temperature_{false};
 };
 
