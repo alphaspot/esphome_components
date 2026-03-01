@@ -295,11 +295,10 @@ class WavinZoneClimate : public climate::Climate, public Component {
   void set_parent(WavinAHC9000 *parent) { this->parent_ = parent; }
   void set_use_floor_temperature(bool use) { this->use_floor_temperature_ = use; }
   
-  void set_single_channel(uint8_t channel) {
+    void set_single_channel(uint8_t channel) {
     this->single_channel_ = channel;
     this->single_channel_set_ = true;
-    this->member_count_ = 0;
-  }
+    }
   
     void set_members(const std::vector<int> &members) {
     this->members_.clear();
